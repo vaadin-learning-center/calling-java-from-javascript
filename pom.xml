@@ -13,7 +13,7 @@
         <failOnMissingWebXml>false</failOnMissingWebXml>
 
 <!--        <vaadin.version>12.0.3</vaadin.version>-->
-        <vaadin.version>14.0.0.rc7</vaadin.version>
+        <vaadin.version>20.0.0.alpha7</vaadin.version>
         <frontend-maven-plugin.nodeVersion>v10.16.0</frontend-maven-plugin.nodeVersion>
         <frontend-maven-plugin.npmVersion>6.9.0</frontend-maven-plugin.npmVersion>
     </properties>
