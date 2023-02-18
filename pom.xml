@@ -7,15 +7,12 @@
     <packaging>war</packaging>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <failOnMissingWebXml>false</failOnMissingWebXml>
 
-<!--        <vaadin.version>12.0.3</vaadin.version>-->
-        <vaadin.version>14.0.0.rc7</vaadin.version>
-        <frontend-maven-plugin.nodeVersion>v10.16.0</frontend-maven-plugin.nodeVersion>
-        <frontend-maven-plugin.npmVersion>6.9.0</frontend-maven-plugin.npmVersion>
+        <vaadin.version>24.0.0.beta2</vaadin.version>
     </properties>
 
     <repositories>
@@ -55,35 +52,7 @@
         <!--Vaadin -->
         <dependency>
             <groupId>com.vaadin</groupId>
-            <!-- Replace artifactId with vaadin-core to use only free components -->
             <artifactId>vaadin-core</artifactId>
-            <exclusions>
-                <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
-                <exclusion>
-                    <groupId>com.vaadin.webjar</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.webjars.bowergithub.insites</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.webjars.bowergithub.polymer</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.webjars.bowergithub.polymerelements</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.webjars.bowergithub.vaadin</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.webjars.bowergithub.webcomponents</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Added to provide logging output as Flow uses -->
@@ -93,12 +62,6 @@
             <artifactId>slf4j-simple</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -107,7 +70,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.4.19.v20190610</version>
+                <version>11.0.13</version>
                 <configuration>
                     <scanIntervalSeconds>1</scanIntervalSeconds>
                 </configuration>
@@ -117,19 +80,8 @@
 
     <profiles>
         <profile>
-            <id>productionMode</id>
-            <activation>
-                <property>
-                    <name>vaadin.productionMode</name>
-                </property>
-            </activation>
-
-            <dependencies>
-                <dependency>
-                    <groupId>com.vaadin</groupId>
-                    <artifactId>flow-server-production-mode</artifactId>
-                </dependency>
-            </dependencies>
+            <!-- Production mode is activated using -Pproduction -->
+            <id>production</id>
 
             <build>
                 <plugins>
@@ -140,57 +92,13 @@
                         <executions>
                             <execution>
                                 <goals>
-                                    <goal>copy-production-files</goal>
-                                    <goal>package-for-production</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>vaadin-install-nodejs</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>vaadin-maven-plugin</artifactId>
-                        <version>${vaadin.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>prepare-frontend</goal>
                                     <goal>build-frontend</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.github.eirslett</groupId>
-                        <artifactId>frontend-maven-plugin</artifactId>
-                        <version>1.7.6</version>
-                        <executions>
-                            <execution>
-                                <!-- optional: you don't really need execution ids, but it looks nice in your build log. -->
-                                <id>install node and npm</id>
-                                <goals>
-                                    <goal>install-node-and-npm</goal>
-                                </goals>
-                                <!-- optional: default phase is "generate-resources" -->
-                                <phase>generate-resources</phase>
+                                <phase>compile</phase>
                             </execution>
                         </executions>
                         <configuration>
-                            <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
-                            <!-- optional: with node version greater than 4.0.0 will use npm provided by node distribution -->
-                            <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
-                            <!-- optional: where to download node and npm from. Defaults to https://nodejs.org/dist/ -->
-                            <!--              <downloadRoot>http://myproxy.example.org/nodejs/</downloadRoot>-->
-                            <installDirectory>${frontend-maven-plugin.installDirectory}</installDirectory>
+                            <productionMode>true</productionMode>
                         </configuration>
                     </plugin>
                 </plugins>
